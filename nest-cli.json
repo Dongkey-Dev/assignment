@@ -1,0 +1,29 @@
+{
+  "projects": {
+    "domain": {
+      "type": "library",
+      "root": "libs/domain",
+      "entryFile": "index",
+      "sourceRoot": "libs/domain/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/domain/tsconfig.lib.json"
+      }
+    },
+    "auth": {
+      "type": "application",
+      "root": "apps/auth",
+      "entryFile": "main",
+      "sourceRoot": "apps/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/auth/tsconfig.app.json"
+      }
+    }
+  },
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "builder": "tsc"
+  },
+  "monorepo": true,
+  "root": "apps/main",
+  "sourceRoot": "apps/main/src"
+}
