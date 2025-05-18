@@ -2,98 +2,98 @@ import { CONDITION_TYPES } from '@constants/events';
 
 export interface CreateEventDto {
   /**
-   * uc774ubca4ud2b8 uc774ub984
+   * Event name
    */
   name: string;
 
   /**
-   * uc774ubca4ud2b8 uc124uba85
+   * Event description
    */
   description: string;
 
   /**
-   * uc774ubca4ud2b8 uc2dcuc791 uc2dcuac04
+   * Event start date
    */
   startDate: Date;
 
   /**
-   * uc774ubca4ud2b8 uc885ub8cc uc2dcuac04
+   * Event end date
    */
   endDate: Date;
 
   /**
-   * uc774ubca4ud2b8 uc0c1ud0dc
+   * Event status
    * @type 'active' | 'inactive'
    */
   status: string;
 
   /**
-   * uc774ubca4ud2b8 uc870uac74 ubaa9ub85d
+   * Event conditions list
    */
   conditions: {
     /**
-     * ud589ub3d9 uc720ud615
+     * Action type
      * @type 'LOGIN' | 'PURCHASE' | 'INVITE_FRIEND'
      */
     actionType: string;
 
     /**
-     * uc870uac74 uc720ud615
+     * Condition type
      */
     conditionType: (typeof CONDITION_TYPES)[keyof typeof CONDITION_TYPES];
 
     /**
-     * ubaa9ud45c uc218uce58
+     * Target count
      */
     targetCount: number;
 
     /**
-     * uc870uac74 uac80uc0c9 ucffcub9ac
+     * Condition search query
      */
     targetCountQuery: {
       /**
-       * ub300uc0c1 ucf5cub809uc158
+       * Target collection
        */
       targetCollection: string;
 
       /**
-       * ud544ud130
+       * Filter
        */
       filter: Record<string, any>;
     };
 
     /**
-     * uc870uac74 ucee8ud14duc2a4ud2b8
+     * Condition context
      */
     context?: {
       /**
-       * ub300uc0c1 uc720ud615
+       * Target type
        */
       targetType: string;
 
       /**
-       * ub300uc0c1 ID ud544ub4dc
+       * Target ID field
        */
       targetIdField: string;
     };
 
     /**
-     * uc870uac74 uae30uac04
+     * Condition period
      */
     period?: {
       /**
-       * uc2dcuc791 uc2dcuac04
+       * Start date
        */
       start: Date;
 
       /**
-       * uc885ub8cc uc2dcuac04
+       * End date
        */
       end: Date;
     };
 
     /**
-     * uc870uac74 uc0c1ud0dc
+     * Condition status
      * @type 'active' | 'inactive'
      */
     status: string;
@@ -102,47 +102,47 @@ export interface CreateEventDto {
 
 export interface EventResponseDto {
   /**
-   * uc774ubca4ud2b8 ID
+   * Event ID
    */
   id: string;
 
   /**
-   * uc774ubca4ud2b8 uc774ub984
+   * Event name
    */
   name: string;
 
   /**
-   * uc774ubca4ud2b8 uc124uba85
+   * Event description
    */
   description: string;
 
   /**
-   * uc774ubca4ud2b8 uc2dcuc791 uc2dcuac04
+   * Event start date
    */
   startDate: Date;
 
   /**
-   * uc774ubca4ud2b8 uc885ub8cc uc2dcuac04
+   * Event end date
    */
   endDate: Date;
 
   /**
-   * uc774ubca4ud2b8 uc0c1ud0dc
+   * Event status
    */
   status: string;
 
   /**
-   * uc774ubca4ud2b8 uc870uac74 ID ubaa9ub85d
+   * Event condition IDs list
    */
   conditionIds: string[];
 
   /**
-   * uc0dduc131 uc2dcuac04
+   * Creation date
    */
   createdAt: Date;
 
   /**
-   * uc5c5ub370uc774ud2b8 uc2dcuac04
+   * Update date
    */
   updatedAt: Date;
 }

@@ -1,4 +1,4 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { RewardsService } from './rewards.service';
 import { TypedRoute, TypedBody, TypedParam } from '@nestia/core';
 import {
@@ -7,16 +7,12 @@ import {
   RequestRewardDto,
   RewardHistoryResponseDto,
 } from '@libs/shared/src/dtos/reward.dto';
-import { RolesGuard } from '@libs/common/auth/roles.guard';
-import { Roles } from '@libs/common/auth/roles.decorator';
-import { UserRole } from '@libs/common/schemas/user.schema';
 
 /**
  * @tag rewards
  * @security bearer
  */
 @Controller({ path: 'rewards', version: '1' })
-@UseGuards(RolesGuard)
 export class RewardsController {
   constructor(private readonly rewardsService: RewardsService) {}
 
@@ -25,7 +21,6 @@ export class RewardsController {
    * @summary 새로운 보상을 등록합니다
    */
   @TypedRoute.Post()
-  @Roles(UserRole.OPERATOR, UserRole.ADMIN)
   async createReward(
     @TypedBody() createRewardDto: CreateRewardDto,
   ): Promise<RewardResponseDto> {
@@ -37,7 +32,6 @@ export class RewardsController {
    * @summary ID로 보상을 조회합니다
    */
   @TypedRoute.Get(':id')
-  @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.AUDITOR)
   async getReward(@TypedParam('id') id: string): Promise<RewardResponseDto> {
     return this.rewardsService.getRewardById(id);
   }
@@ -47,7 +41,6 @@ export class RewardsController {
    * @summary 이벤트 ID로 보상 목록을 조회합니다
    */
   @TypedRoute.Get('event/:eventId')
-  @Roles(UserRole.OPERATOR, UserRole.ADMIN, UserRole.AUDITOR)
   async getRewardsByEvent(
     @TypedParam('eventId') eventId: string,
   ): Promise<RewardResponseDto[]> {
@@ -59,7 +52,6 @@ export class RewardsController {
    * @summary 조건을 충족한 이벤트의 보상을 요청합니다
    */
   @TypedRoute.Post('request')
-  @Roles(UserRole.USER, UserRole.ADMIN)
   async requestReward(
     @TypedBody() requestRewardDto: RequestRewardDto,
   ): Promise<RewardHistoryResponseDto> {
@@ -71,7 +63,6 @@ export class RewardsController {
    * @summary 사용자의 보상 이력을 조회합니다
    */
   @TypedRoute.Get('history/:userId')
-  @Roles(UserRole.AUDITOR, UserRole.ADMIN)
   async getRewardHistory(
     @TypedParam('userId') userId: string,
   ): Promise<RewardHistoryResponseDto[]> {

@@ -18,13 +18,13 @@ export class RolesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // ud544uc694ud55c uc5edud560 uac00uc838uc624uae30
+    // Get required roles from metadata
     const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
 
-    // uc5edud560uc774 uc9c0uc815ub418uc9c0 uc54auc740 uacbduc6b0 uc811uadfc ud5c8uc6a9
+    // Allow access if no roles are specified
     if (!requiredRoles || requiredRoles.length === 0) {
       return true;
     }
@@ -32,7 +32,7 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const authHeader = request.headers.authorization;
 
-    // ud5e4ub354uac00 uc5c6ub294 uacbduc6b0 uc811uadfc uac70ubd80
+    // Deny access if authorization header is missing
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new UnauthorizedException('Authentication token is missing');
     }
@@ -40,14 +40,14 @@ export class RolesGuard implements CanActivate {
     const token = authHeader.substring(7);
 
     try {
-      // ud1a0ud070 uac80uc99d
+      // Verify token
       const payload = await this.jwtService.verifyAsync(token);
       request.user = payload;
 
-      // uc0acuc6a9uc790uc758 uc5edud560uc774 ud544uc694ud55c uc5edud560uc5d0 ud3ecud568ub418ub294uc9c0 ud655uc778
+      // Check if user's role is included in the required roles
       const userRole = payload.role;
 
-      // ADMINuc740 ubaa8ub4e0 uad8cud55c uc788uc74c
+      // ADMIN has access to all routes
       if (userRole === UserRole.ADMIN) {
         return true;
       }

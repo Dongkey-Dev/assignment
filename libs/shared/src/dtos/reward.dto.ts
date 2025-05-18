@@ -2,58 +2,58 @@ import typia from 'typia';
 
 export interface CreateRewardDto {
   /**
-   * uc774ubca4ud2b8 ID
+   * Event ID
    */
   eventId: string;
 
   /**
-   * ubcf4uc0c1 uc774ub984
+   * Reward name
    */
   name: string;
 
   /**
-   * ubcf4uc0c1 uc124uba85
+   * Reward description
    */
   description: string;
 
   /**
-   * ubcf4uc0c1 uc720ud615
+   * Reward type
    * @type 'POINT' | 'ITEM' | 'COUPON'
    */
   type: string;
 
   /**
-   * ubcf4uc0c1 uac00uce58
+   * Reward value
    */
   value: {
     /**
-     * uc218ub7c9 ub610ub294 uac00uce58
+     * Amount or value
      */
     amount: number;
 
     /**
-     * ucd94uac00 uc815ubcf4
+     * Additional information
      */
     metadata?: Record<string, any>;
   };
 
   /**
-   * ubcf4uc0c1 uae30uac04
+   * Reward period
    */
   period?: {
     /**
-     * uc2dcuc791 uc2dcuac04
+     * Start date
      */
     start: Date;
 
     /**
-     * uc885ub8cc uc2dcuac04
+     * End date
      */
     end: Date;
   };
 
   /**
-   * ubcf4uc0c1 uc0c1ud0dc
+   * Reward status
    * @type 'active' | 'inactive'
    */
   status: string;
@@ -61,32 +61,32 @@ export interface CreateRewardDto {
 
 export interface RewardResponseDto {
   /**
-   * ubcf4uc0c1 ID
+   * Reward ID
    */
   id: string;
 
   /**
-   * uc774ubca4ud2b8 ID
+   * Event ID
    */
   eventId: string;
 
   /**
-   * ubcf4uc0c1 uc774ub984
+   * Reward name
    */
   name: string;
 
   /**
-   * ubcf4uc0c1 uc124uba85
+   * Reward description
    */
   description: string;
 
   /**
-   * ubcf4uc0c1 uc720ud615
+   * Reward type
    */
   type: string;
 
   /**
-   * ubcf4uc0c1 uac00uce58
+   * Reward value
    */
   value: {
     amount: number;
@@ -94,7 +94,7 @@ export interface RewardResponseDto {
   };
 
   /**
-   * ubcf4uc0c1 uae30uac04
+   * Reward period
    */
   period?: {
     start: Date;
@@ -102,79 +102,79 @@ export interface RewardResponseDto {
   };
 
   /**
-   * ubcf4uc0c1 uc0c1ud0dc
+   * Reward status
    */
   status: string;
 
   /**
-   * uc0dduc131 uc2dcuac04
+   * Creation date
    */
   createdAt: Date;
 
   /**
-   * uc5c5ub370uc774ud2b8 uc2dcuac04
+   * Update date
    */
   updatedAt: Date;
 }
 
 export interface RequestRewardDto {
   /**
-   * uc774ubca4ud2b8 ID
+   * Event ID
    */
   eventId: string;
 
   /**
-   * uc0acuc6a9uc790 ID
+   * User ID
    */
   userId: string;
 }
 
 export interface RewardHistoryQueryDto {
   /**
-   * uc0acuc6a9uc790 ID (optional)
+   * User ID (optional)
    */
   userId?: string;
 }
 
 export interface RewardHistoryResponseDto {
   /**
-   * ubcf4uc0c1 uc774ub825 ID
+   * Reward history ID
    */
   id: string;
 
   /**
-   * uc0acuc6a9uc790 ID
+   * User ID
    */
   userId: string;
 
   /**
-   * uc774ubca4ud2b8 ID
+   * Event ID
    */
   eventId: string;
 
   /**
-   * ubcf4uc0c1 ID
+   * Reward ID
    */
   rewardId: string;
 
   /**
-   * ubcf4uc0c1 uc815ubcf4
+   * Reward information
    */
   reward: RewardResponseDto;
 
   /**
-   * uc0c1ud0dc
+   * Status
    * @type 'pending' | 'completed' | 'failed'
    */
   status: string;
 
   /**
-   * uc0dduc131 uc2dcuac04
+   * Creation date
    */
   createdAt: Date;
 
   /**
-   * uc5c5ub370uc774ud2b8 uc2dcuac04
+   * Update date
    */
   updatedAt: Date;
 }

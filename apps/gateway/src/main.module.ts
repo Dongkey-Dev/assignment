@@ -1,11 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 import { ActionsModule } from './actions/actions.module';
 import { EventsModule } from './events/events.module';
 import { RewardsModule } from './rewards/rewards.module';
 import { getMongoConfig } from '@libs/config/mongodb.config';
+import { ProxyMiddleware } from './middleware/proxy.middleware';
 
 @Module({
   imports: [
@@ -13,6 +15,13 @@ import { getMongoConfig } from '@libs/config/mongodb.config';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env', `.env.gateway.${process.env.NODE_ENV || 'dev'}`],
+    }),
+
+    // JWT 인증 모듈
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET || 'secretKey',
+      signOptions: { expiresIn: '1h' },
     }),
 
     // MongoDB 연결 설정
@@ -26,5 +35,11 @@ import { getMongoConfig } from '@libs/config/mongodb.config';
     EventsModule,
     RewardsModule,
   ],
+  providers: [ProxyMiddleware],
 })
-export class MainModule {}
+export class MainModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // 모든 경로에 프록시 미들웨어 적용
+    consumer.apply(ProxyMiddleware).forRoutes('*');
+  }
+}

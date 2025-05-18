@@ -2,46 +2,46 @@ import typia from 'typia';
 
 export interface MockActionDto {
   /**
-   * uc0acuc6a9uc790 ID
+   * User ID
    * @format uuid
    */
   userId: string;
 
   /**
-   * ud589ub3d9 uc720ud615
+   * Action type
    * @type 'LOGIN' | 'PURCHASE' | 'INVITE_FRIEND'
    */
   action: string;
 
   /**
-   * ud589ub3d9 uc138ubd80 uc815ubcf4
+   * Action details
    */
   details: {
     /**
-     * ud589ub3d9 ub300uc0c1
+     * Action target
      */
     target: {
       /**
-       * ub300uc0c1 uc720ud615
+       * Target type
        * @type 'User' | 'Product'
        */
       type: string;
 
       /**
-       * ub300uc0c1 ID
+       * Target ID
        * @format uuid
        */
       id: string;
     };
 
     /**
-     * ucd94uac00 uc815ubcf4
+     * Additional information
      */
     custom?: Record<string, any>;
   };
 
   /**
-   * ud589ub3d9 uc2dcuac04
+   * Action timestamp
    */
   timestamp?: Date;
 }
