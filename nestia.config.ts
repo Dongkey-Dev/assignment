@@ -68,7 +68,7 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
     servers: [
       {
         url: 'http://localhost:3002',
-        description: 'Local Gateway Server',
+        description: 'Local / Docker Gateway Server',
       },
     ],
     beautify: true,

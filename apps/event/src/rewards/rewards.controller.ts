@@ -17,8 +17,8 @@ export class RewardsController {
   constructor(private readonly rewardsService: RewardsService) {}
 
   /**
-   * Register reward
-   * @summary Register a new reward
+   * 보상 등록
+   * @summary 새로운 보상을 등록합니다
    */
   @TypedRoute.Post()
   async createReward(
@@ -28,8 +28,8 @@ export class RewardsController {
   }
 
   /**
-   * Get reward
-   * @summary Get information about a specific reward
+   * 보상 조회
+   * @summary ID로 보상을 조회합니다
    */
   @TypedRoute.Get(':id')
   async getReward(@TypedParam('id') id: string): Promise<RewardResponseDto> {
@@ -37,8 +37,8 @@ export class RewardsController {
   }
 
   /**
-   * Get all rewards
-   * @summary Get a list of all rewards
+   * 전체 보상 조회
+   * @summary 모든 보상 목록을 조회합니다
    */
   @TypedRoute.Get()
   async getAllRewards(): Promise<RewardResponseDto[]> {
@@ -46,8 +46,8 @@ export class RewardsController {
   }
 
   /**
-   * Request reward
-   * @summary Request an event reward
+   * 보상 요청
+   * @summary 조건을 충족한 이벤트의 보상을 요청합니다
    */
   @TypedRoute.Post('request')
   async requestReward(
@@ -57,8 +57,8 @@ export class RewardsController {
   }
 
   /**
-   * Get reward history
-   * @summary Get reward history
+   * 보상 이력 조회
+   * @summary 사용자의 보상 이력을 조회합니다
    */
   @TypedRoute.Get('history')
   async getRewardHistory(

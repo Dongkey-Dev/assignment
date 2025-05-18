@@ -4,7 +4,6 @@ import {
   Logger,
   UnauthorizedException,
   ForbiddenException,
-  NotFoundException,
 } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { JwtService } from '@nestjs/jwt';
@@ -23,7 +22,7 @@ export class ProxyMiddleware implements NestMiddleware {
 
   constructor(private readonly jwtService: JwtService) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, res: Response, _next: NextFunction) {
     const { path, method } = req;
 
     this.logger.log(`Received request: ${method} ${path}`);
@@ -58,23 +57,25 @@ export class ProxyMiddleware implements NestMiddleware {
         if (!this.hasRequiredRole(roleKey, payload.roles)) {
           throw new ForbiddenException('Insufficient permissions');
         }
-      } catch (error) {
+      } catch (error: unknown) {
         if (
           error instanceof UnauthorizedException ||
-          error.name === 'JsonWebTokenError' ||
-          error.name === 'TokenExpiredError'
+          (error as Error).name === 'JsonWebTokenError' ||
+          (error as Error).name === 'TokenExpiredError'
         ) {
-          this.logger.error(`Authentication error: ${error.message}`);
+          this.logger.error(
+            `Authentication error: ${(error as Error).message}`,
+          );
           return res.status(401).json({ message: 'Unauthorized' });
         }
 
         if (error instanceof ForbiddenException) {
-          this.logger.error(`Authorization error: ${error.message}`);
+          this.logger.error(`Authorization error: ${(error as Error).message}`);
           return res.status(403).json({ message: 'Forbidden' });
         }
 
         this.logger.error(
-          `Unexpected error during authentication: ${error.message}`,
+          `Unexpected error during authentication: ${(error as Error).message}`,
         );
         return res.status(500).json({ message: 'Internal Server Error' });
       }
@@ -92,12 +93,14 @@ export class ProxyMiddleware implements NestMiddleware {
 
       // 응답 상태 코드 및 본문 설정
       res.status(response.status).json(response.data);
-    } catch (error) {
-      this.logger.error(`Error forwarding request: ${error.message}`);
+    } catch (error: unknown) {
+      this.logger.error(
+        `Error forwarding request: ${(error as Error).message}`,
+      );
 
-      if (error.response) {
+      if ((error as any).response) {
         // 대상 서버에서 오는 에러 응답 그대로 전달
-        const { status, data } = error.response;
+        const { status, data } = (error as any).response;
         return res.status(status).json(data);
       }
 

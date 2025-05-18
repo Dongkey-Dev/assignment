@@ -31,10 +31,12 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/apps/gateway/tsconfig.app.json ./dist/apps/gateway/tsconfig.app.json
+COPY --from=build /app/tsconfig.json ./dist/tsconfig.json
 
 # Copy environment files if they exist
 COPY .env* ./
 
 EXPOSE $SERVER_PORT
 
-CMD ["node", "dist/apps/gateway/main.js"]
+CMD ["node", "dist/apps/gateway/src/main.js"]

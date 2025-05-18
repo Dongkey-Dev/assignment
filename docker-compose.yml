@@ -18,12 +18,12 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - NODE_ENV=dev
+      - NODE_ENV=live
       - MONGO_URI=mongodb://admin:password@mongodb:27017/event-reward?authSource=admin
-      - JWT_SECRET=your_jwt_secret_key
+      - JWT_SECRET=secret
     depends_on:
       - mongodb
-    command: yarn start:auth
+    command: ["node", "dist/apps/auth/src/main.js"]
     restart: always
 
   gateway:
@@ -33,24 +33,14 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - NODE_ENV=dev
+      - NODE_ENV=live
       - MONGO_URI=mongodb://admin:password@mongodb:27017/event-reward?authSource=admin
-      - JWT_SECRET=your_jwt_secret_key
+      - JWT_SECRET=secret
+      - AUTH_SERVICE_URL=http://auth:3001
+      - EVENT_SERVICE_URL=http://event:3003      
     depends_on:
       - mongodb
-    command: yarn start:gateway
-    restart: always
-
-  gateway-swagger:
-    build:
-      context: .
-      dockerfile: apps/gateway/Dockerfile-swagger
-    ports:
-      - "8080:3000"
-    environment:
-      - NODE_ENV=dev
-    depends_on:
-      - gateway
+    command: ["node", "dist/apps/gateway/src/main.js"]
     restart: always
 
   event:
@@ -60,12 +50,24 @@ services:
     ports:
       - "3003:3003"
     environment:
-      - NODE_ENV=dev
+      - NODE_ENV=live
       - MONGO_URI=mongodb://admin:password@mongodb:27017/event-reward?authSource=admin
-      - JWT_SECRET=your_jwt_secret_key
+      - JWT_SECRET=secret
     depends_on:
       - mongodb
-    command: yarn start:event
+    command: ["node", "dist/apps/event/src/main.js"]
+    restart: always
+
+  gateway-swagger:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile-swagger
+    ports:
+      - "8080:37812"
+    environment:
+      - NODE_ENV=live
+    depends_on:
+      - gateway
     restart: always
 
 volumes:

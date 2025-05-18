@@ -8,7 +8,7 @@ export const getMongoConfig = (): MongooseModuleOptions => {
       uri: 'mongodb://localhost:27017/event-reward',
     },
     live: {
-      uri: process.env.MONGODB_URI,
+      uri: process.env.MONGO_URI,
     },
   };
 

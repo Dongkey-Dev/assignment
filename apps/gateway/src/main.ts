@@ -1,7 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { MainModule } from './main.module';
 import { ProxyMiddleware } from './middleware/proxy.middleware';
-import { Logger } from '@nestjs/common';
+import { Logger, VersioningType } from '@nestjs/common';
+import { NestiaSwaggerComposer } from '@nestia/sdk';
+import { SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -9,10 +11,24 @@ async function bootstrap() {
 
   // 애플리케이션 생성
   const app = await NestFactory.create(MainModule);
+  const document = await NestiaSwaggerComposer.document(app, {
+    openapi: '3.1',
+    servers: [
+      {
+        url: 'http://localhost:3002',
+        description: 'Local / Docker Gateway Server',
+      },
+    ],
+  });
 
-  // API 경로에 전역 prefix 설정
-  app.setGlobalPrefix('api/v1');
+  // 버전닝 설정
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: '1',
+    prefix: 'api',
+  });
 
+  SwaggerModule.setup('api-docs', app, document as any);
   // CORS 설정
   app.enableCors();
 
