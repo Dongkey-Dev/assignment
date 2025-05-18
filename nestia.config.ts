@@ -4,7 +4,7 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
   /**
    * List of files or directories containing the NestJS controller classes.
    */
-  input: ['apps/auth/src/**/*.controller.ts'],
+  input: ['apps/gateway/src/**/*.controller.ts'],
 
   /**
    * Output directory that SDK would be placed in.
@@ -67,8 +67,8 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
     output: './swagger.json',
     servers: [
       {
-        url: 'http://localhost:3001',
-        description: 'Local Auth Server',
+        url: 'http://localhost:3002',
+        description: 'Local Gateway Server',
       },
     ],
     beautify: true,

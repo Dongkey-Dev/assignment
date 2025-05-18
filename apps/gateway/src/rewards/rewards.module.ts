@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
+import { HttpModule } from '@nestjs/axios';
+import { ConfigModule } from '@nestjs/config';
 import { RewardsController } from './rewards.controller';
 import { RewardsService } from './rewards.service';
 import { Reward, RewardSchema } from '@libs/common/schemas/reward.schema';
@@ -15,7 +17,6 @@ import {
 } from '@libs/common/schemas/condition.schema';
 import { jwtConfig } from '@libs/common/config/jwt.config';
 import { EventsModule } from '../events/events.module';
-import { RewardsConditionCheckerService } from 'apps/event/src/rewards/rewards-condition-checker.service';
 import {
   UserAction,
   UserActionSchema,
@@ -31,9 +32,14 @@ import {
       { name: UserAction.name, schema: UserActionSchema },
     ]),
     JwtModule.registerAsync(jwtConfig),
+    HttpModule.register({
+      timeout: 5000,
+      maxRedirects: 5,
+    }),
+    ConfigModule,
     EventsModule,
   ],
   controllers: [RewardsController],
-  providers: [RewardsService, RewardsConditionCheckerService],
+  providers: [RewardsService],
 })
 export class RewardsModule {}

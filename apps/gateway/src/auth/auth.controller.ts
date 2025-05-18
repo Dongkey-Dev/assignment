@@ -7,16 +7,13 @@ import {
   UserResponseDto,
 } from '@libs/common/dto/auth/user.dto';
 
-/**
- * @tag auth
- * @security bearer
- */
 @Controller({ path: 'auth', version: '1' })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   /**
    * 사용자 등록
+   * @tag auth
    * @summary 새로운 사용자를 등록합니다
    */
   @TypedRoute.Post('register')
@@ -28,6 +25,7 @@ export class AuthController {
 
   /**
    * 사용자 로그인
+   * @tag auth
    * @summary 사용자 인증 및 JWT 토큰 발급
    */
   @TypedRoute.Post('login')

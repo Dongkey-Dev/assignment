@@ -1,8 +1,8 @@
 # Base Layer
 FROM node:18-alpine AS base
 
-ENV SERVER_APP=auth
-ENV SERVER_PORT=3001
+ENV SERVER_APP=gateway
+ENV SERVER_PORT=3002
 ENV NODE_ENV=dev
 
 WORKDIR /app
@@ -20,10 +20,10 @@ FROM deps as build
 
 # Copy libs and app source
 COPY libs ./libs
-COPY apps/auth ./apps/auth
+COPY apps/gateway ./apps/gateway
 
 # Build the application
-RUN yarn build auth
+RUN yarn build gateway
 
 # Production Layer
 FROM base as prod
@@ -37,4 +37,4 @@ COPY .env* ./
 
 EXPOSE $SERVER_PORT
 
-CMD ["node", "dist/apps/auth/main.js"]
+CMD ["node", "dist/apps/gateway/main.js"]
