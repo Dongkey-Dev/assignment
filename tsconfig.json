@@ -27,6 +27,18 @@
       "@auth/*": [
         "apps/auth/*"
       ],
+      "@event": [
+        "apps/event"
+      ],
+      "@event/*": [
+        "apps/event/*"
+      ],
+      "@gateway": [
+        "apps/gateway"
+      ],
+      "@gateway/*": [
+        "apps/gateway/*"
+      ],            
       "@libs": [
         "libs"
       ],
@@ -38,6 +50,12 @@
       ],
       "@shared/*": [
         "libs/shared/*"
+      ],
+      "@constants": [
+        "libs/common/constants"
+      ],
+      "@constants/*": [
+        "libs/common/constants/*"
       ]
     },
     "plugins": [

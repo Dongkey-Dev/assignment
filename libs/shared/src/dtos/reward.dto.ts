@@ -129,6 +129,13 @@ export interface RequestRewardDto {
   userId: string;
 }
 
+export interface RewardHistoryQueryDto {
+  /**
+   * uc0acuc6a9uc790 ID (optional)
+   */
+  userId?: string;
+}
+
 export interface RewardHistoryResponseDto {
   /**
    * ubcf4uc0c1 uc774ub825 ID
@@ -171,7 +178,3 @@ export interface RewardHistoryResponseDto {
    */
   updatedAt: Date;
 }
-
-export const validateCreateRewardDto = typia.createValidate<CreateRewardDto>();
-export const validateRequestRewardDto =
-  typia.createValidate<RequestRewardDto>();

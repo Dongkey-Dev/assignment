@@ -16,7 +16,7 @@ import {
   RequestRewardDto,
   RewardHistoryResponseDto,
 } from '@libs/shared/src/dtos/reward.dto';
-import { ConditionCheckerService } from '@libs/common/services/condition-checker.service';
+import { RewardsConditionCheckerService } from 'apps/event/src/rewards/rewards-condition-checker.service';
 
 @Injectable()
 export class RewardsService {
@@ -26,7 +26,7 @@ export class RewardsService {
     private rewardHistoryModel: Model<RewardHistory>,
     @InjectModel(Event.name) private eventModel: Model<Event>,
     @InjectModel(Condition.name) private conditionModel: Model<Condition>,
-    private readonly conditionCheckerService: ConditionCheckerService,
+    private readonly conditionCheckerService: RewardsConditionCheckerService,
   ) {}
 
   async createReward(

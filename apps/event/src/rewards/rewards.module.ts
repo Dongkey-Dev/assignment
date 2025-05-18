@@ -1,21 +1,21 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { JwtModule } from '@nestjs/jwt';
-import { RewardsController } from './rewards.controller';
-import { RewardsService } from './rewards.service';
 import { Reward, RewardSchema } from '@libs/common/schemas/reward.schema';
+import { Event, EventSchema } from '@libs/common/schemas/event.schema';
+import { AuthModule } from '@libs/common/auth/auth.module';
+import { EventsModule } from '../events/events.module';
+import { ConditionModule } from '@libs/common/condition/condition.module';
 import {
   RewardHistory,
   RewardHistorySchema,
 } from '@libs/common/schemas/reward-history.schema';
-import { Event, EventSchema } from '@libs/common/schemas/event.schema';
 import {
   Condition,
   ConditionSchema,
 } from '@libs/common/schemas/condition.schema';
-import { jwtConfig } from '@libs/common/config/jwt.config';
-import { EventsModule } from '../events/events.module';
-import { RewardsConditionCheckerService } from 'apps/event/src/rewards/rewards-condition-checker.service';
+import { RewardsController } from './rewards.controller';
+import { RewardsService } from './rewards.service';
+import { RewardsConditionCheckerService } from './rewards-condition-checker.service';
 import {
   UserAction,
   UserActionSchema,
@@ -30,8 +30,9 @@ import {
       { name: Condition.name, schema: ConditionSchema },
       { name: UserAction.name, schema: UserActionSchema },
     ]),
-    JwtModule.registerAsync(jwtConfig),
+    AuthModule,
     EventsModule,
+    ConditionModule,
   ],
   controllers: [RewardsController],
   providers: [RewardsService, RewardsConditionCheckerService],

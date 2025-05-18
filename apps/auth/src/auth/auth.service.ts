@@ -12,8 +12,8 @@ import {
   CreateUserDto,
   LoginUserDto,
   UserResponseDto,
-} from '../../../../libs/common/dto/auth/user.dto';
-import { USER } from '../../../../libs/common/constants/events';
+} from '@libs/common/dto/auth/user.dto';
+import { USER } from '@constants/events';
 
 @Injectable()
 export class AuthService {

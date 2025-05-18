@@ -1,4 +1,4 @@
-import { TARGET_TYPES } from '@libs/common/constants/events';
+import { TARGET_TYPES } from '@constants/events';
 
 export interface Target {
   type: (typeof TARGET_TYPES)[keyof typeof TARGET_TYPES];

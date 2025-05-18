@@ -3,23 +3,23 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Connection, connect, Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
-import { ConditionCheckerService } from '../libs/common/services/condition-checker.service';
-import {
-  Condition,
-  ConditionSchema,
-} from '../libs/common/schemas/condition.schema';
 import {
   UserAction,
   UserActionSchema,
-} from '../libs/common/schemas/user-action.schema';
-import { USER_ACTIONS, CONDITION_TYPES } from '../libs/common/constants/events';
+} from '@libs/common/schemas/user-action.schema';
+import { RewardsConditionCheckerService } from '@event/src/rewards/rewards-condition-checker.service';
+import { CONDITION_TYPES, USER_ACTIONS } from '@constants/events';
+import {
+  Condition,
+  ConditionSchema,
+} from '@libs/common/schemas/condition.schema';
 
 describe('ConditionChecker PoC Test', () => {
   let mongod: MongoMemoryServer;
   let mongoConnection: Connection;
   let conditionModel: Model<Condition>;
   let userActionModel: Model<UserAction>;
-  let conditionCheckerService: ConditionCheckerService;
+  let conditionCheckerService: RewardsConditionCheckerService;
 
   beforeAll(async () => {
     // Create in-memory MongoDB server
@@ -38,7 +38,7 @@ describe('ConditionChecker PoC Test', () => {
           { name: UserAction.name, schema: UserActionSchema },
         ]),
       ],
-      providers: [ConditionCheckerService],
+      providers: [RewardsConditionCheckerService],
     }).compile();
 
     // Get the models and service
@@ -48,8 +48,8 @@ describe('ConditionChecker PoC Test', () => {
     userActionModel = module.get<Model<UserAction>>(
       getModelToken(UserAction.name),
     );
-    conditionCheckerService = module.get<ConditionCheckerService>(
-      ConditionCheckerService,
+    conditionCheckerService = module.get<RewardsConditionCheckerService>(
+      RewardsConditionCheckerService,
     );
   });
 

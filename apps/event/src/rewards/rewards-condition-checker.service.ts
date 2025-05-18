@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Condition } from '../schemas/condition.schema';
-import { UserAction } from '../schemas/user-action.schema';
+import { Condition } from '@libs/common/schemas/condition.schema';
+import { UserAction } from '@libs/common/schemas/user-action.schema';
 
 @Injectable()
-export class ConditionCheckerService {
+export class RewardsConditionCheckerService {
   constructor(
     @InjectModel(Condition.name) private conditionModel: Model<Condition>,
     @InjectModel(UserAction.name) private userActionModel: Model<UserAction>,

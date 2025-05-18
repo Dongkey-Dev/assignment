@@ -1,5 +1,4 @@
-import typia from 'typia';
-import { CONDITION_TYPES } from '../../../common/constants/events';
+import { CONDITION_TYPES } from '@constants/events';
 
 export interface CreateEventDto {
   /**
@@ -147,5 +146,3 @@ export interface EventResponseDto {
    */
   updatedAt: Date;
 }
-
-export const validateCreateEventDto = typia.createValidate<CreateEventDto>();

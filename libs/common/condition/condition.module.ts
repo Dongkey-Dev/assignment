@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Condition, ConditionSchema } from '../schemas/condition.schema';
 import { UserAction, UserActionSchema } from '../schemas/user-action.schema';
-import { ConditionCheckerService } from '../services/condition-checker.service';
+import { RewardsConditionCheckerService } from '../../../apps/event/src/rewards/rewards-condition-checker.service';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { ConditionCheckerService } from '../services/condition-checker.service';
       { name: UserAction.name, schema: UserActionSchema },
     ]),
   ],
-  providers: [ConditionCheckerService],
-  exports: [ConditionCheckerService],
+  providers: [RewardsConditionCheckerService],
+  exports: [RewardsConditionCheckerService],
 })
 export class ConditionModule {}
