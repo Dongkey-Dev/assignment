@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    restart: always
+
+  # gateway:
+  #   build:
+  #     context: ./packages/gateway
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - MONGO_URI=mongodb://admin:password@mongodb:27017/gateway?authSource=admin
+  #   depends_on:
+  #     - mongodb
+  #   restart: always
+
+  # auth:
+  #   build:
+  #     context: ./packages/auth
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3001:3001"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - MONGO_URI=mongodb://admin:password@mongodb:27017/auth?authSource=admin
+  #   depends_on:
+  #     - mongodb
+  # event:
+  #   build:
+  #     context: ./packages/event
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3002:3002"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - MONGO_URI=mongodb://admin:password@mongodb:27017/event?authSource=admin
+  #   depends_on:
+  #     - mongodb
+volumes:
+  mongodb_data:

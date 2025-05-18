@@ -1,0 +1,175 @@
+### 환경 변수 설정
+@baseUrl = http://localhost:3002/api/v1
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQ1Njc4OTAiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2MjA5MjIwMDAsImV4cCI6MTYyMTAwODQwMH0.YOUR_MOCK_TOKEN_SIGNATURE
+@userId = user123
+@eventId = event123
+@conditionId = condition123
+@rewardId = reward123
+@rewardHistoryId = rewardHistory123
+@userActionId = userAction123 
+@startDate = 2025-05-18T10:00:00Z
+@endDate = 2025-05-18T11:00:00Z
+
+
+### 1. 인증 API
+
+# 사용자 등록
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "role": "user"
+}
+
+###
+
+# 사용자 로그인
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 2. 유저 행동 모킹 API
+
+# 로그인 행동 모킹
+POST {{baseUrl}}/actions/mock
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "userId": "user123",
+  "action": "LOGIN",
+  "details": {
+    "target": {
+      "type": "User",
+      "id": "user123"
+    }
+  },
+  "timestamp": "2025-05-18T10:00:00Z"
+}
+
+###
+
+# 친구 초대 행동 모킹
+POST {{baseUrl}}/actions/mock
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "userId": "user123",
+  "action": "INVITE_FRIEND",
+  "details": {
+    "target": {
+      "type": "User",
+      "id": "friend456"
+    }
+  },
+  "timestamp": "2025-05-18T11:00:00Z"
+}
+
+### 3. 이벤트 등록/조회 API
+
+# 이벤트 등록
+POST {{baseUrl}}/events
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "name": "3일 연속 로그인 이벤트",
+  "description": "3일 연속 로그인 시 보상 지급",
+  "startDate": "2025-05-01T00:00:00Z",
+  "endDate": "2025-05-31T23:59:59Z",
+  "status": "active",
+  "conditions": [
+    {
+      "actionType": "LOGIN",
+      "conditionType": "STREAK",
+      "targetCount": 3,
+      "targetCountQuery": {
+        "targetCollection": "user_actions",
+        "filter": {
+          "action": "LOGIN",
+          "details.target.type": "User",
+          "userId": "{{userId}}",
+          "timestamp": {
+            "$gte": "{{startDate}}",
+            "$lte": "{{endDate}}"
+          }
+        }
+      },
+      "context": {
+        "targetType": "User",
+        "targetIdField": "userId"
+      },
+      "status": "active"
+    }
+  ]
+}
+
+###
+
+# 이벤트 조회
+GET {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{authToken}}
+
+###
+
+# 전체 이벤트 조회
+GET {{baseUrl}}/events
+Authorization: Bearer {{authToken}}
+
+### 4. 보상 등록/조회 API
+
+# 보상 등록
+POST {{baseUrl}}/rewards
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "eventId": "{{eventId}}",
+  "name": "포인트 보상",
+  "description": "3일 연속 로그인 포인트 보상",
+  "type": "POINT",
+  "value": {
+    "amount": 100,
+    "metadata": {
+      "expireDate": "2025-06-30T23:59:59Z"
+    }
+  },
+  "status": "active"
+}
+
+###
+
+# 보상 조회
+GET {{baseUrl}}/rewards/{{rewardId}}
+Authorization: Bearer {{authToken}}
+
+###
+
+# 이벤트별 보상 조회
+GET {{baseUrl}}/rewards/event/{{eventId}}
+Authorization: Bearer {{authToken}}
+
+### 5. 보상 요청/이력 조회 API
+
+# 보상 요청
+POST {{baseUrl}}/rewards/request
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "eventId": "{{eventId}}",
+  "userId": "user123"
+}
+
+###
+
+# 보상 이력 조회
+GET {{baseUrl}}/rewards/history/user123
+Authorization: Bearer {{authToken}}

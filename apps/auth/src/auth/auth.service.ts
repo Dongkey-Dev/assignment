@@ -7,7 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { User, UserDocument } from '@libs/common/schemas/user.schema';
+import { User } from '@libs/common/schemas/user.schema';
 import {
   CreateUserDto,
   LoginUserDto,
@@ -18,7 +18,7 @@ import { USER } from '../../../../libs/common/constants/events';
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -100,7 +100,7 @@ export class AuthService {
    * @param user 사용자 정보
    * @returns JWT 토큰
    */
-  private generateToken(user: UserDocument): string {
+  private generateToken(user: User): string {
     const payload = {
       sub: user._id.toString(),
       email: user.email,

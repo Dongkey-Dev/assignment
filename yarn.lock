@@ -922,6 +922,11 @@
     tstl "^3.0.0"
     typia "^6.12.0"
 
+"@nestjs/axios@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/axios/-/axios-4.0.0.tgz#520ff7c6238e635658fe334ee62db9d1b9c5546f"
+  integrity sha512-1cB+Jyltu/uUPNQrpUimRHEQHrnQrpLzVj6dU3dgn6iDDDdahr10TgHFGTmw5VuJ9GzKZsCLDL78VSwJAs/9JQ==
+
 "@nestjs/bull-shared@^11.0.2":
   version "11.0.2"
   resolved "https://registry.yarnpkg.com/@nestjs/bull-shared/-/bull-shared-11.0.2.tgz#dd12c404c68f130b4d1c2486c533d4c6e58b9b17"

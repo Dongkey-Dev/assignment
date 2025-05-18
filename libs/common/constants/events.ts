@@ -25,3 +25,12 @@ export const CONDITION_TYPES = {
   CUMULATIVE: 'cumulative',
   ONCE: 'once',
 } as const;
+
+/**
+ * 타겟 타입 상수
+ */
+export const TARGET_TYPES = {
+  USER: 'User',
+  PRODUCT: 'Product',
+  QUEST: 'Quest',
+} as const;

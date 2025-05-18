@@ -1,8 +1,8 @@
-import * as typia from 'typia';
+import { TARGET_TYPES } from '@libs/common/constants/events';
 
 export interface Target {
-  type: 'User' | 'Product' & typia.tags.Type<'string'>;
-  id: string & typia.tags.Type<'string'>;
+  type: (typeof TARGET_TYPES)[keyof typeof TARGET_TYPES];
+  id: string;
 }
 
 export interface UserAction {

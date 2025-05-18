@@ -32,6 +32,12 @@
       ],
       "@libs/*": [
         "libs/*"
+      ],
+      "@shared": [
+        "libs/shared"
+      ],
+      "@shared/*": [
+        "libs/shared/*"
       ]
     },
     "plugins": [

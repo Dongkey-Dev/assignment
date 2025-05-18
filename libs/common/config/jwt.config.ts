@@ -1,4 +1,4 @@
-import { JwtModuleOptions } from '@nestjs/jwt';
+import { JwtModuleOptions, JwtModuleAsyncOptions } from '@nestjs/jwt';
 
 export const getJwtConfig = (): JwtModuleOptions => {
   const nodeEnv = process.env.NODE_ENV || 'dev';
@@ -15,4 +15,8 @@ export const getJwtConfig = (): JwtModuleOptions => {
   };
 
   return configs[nodeEnv] || configs.dev;
+};
+
+export const jwtConfig: JwtModuleAsyncOptions = {
+  useFactory: getJwtConfig,
 };
