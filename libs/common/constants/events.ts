@@ -7,3 +7,21 @@ export const USER = {
    */
   CREATED: 'user.created',
 } as const;
+
+/**
+ * 사용자 액션 상수
+ */
+export const USER_ACTIONS = {
+  PURCHASE: 'purchase',
+  INVITE: 'invite',
+  LOGIN: 'login',
+  INVITE_FRIEND: 'invite_friend',
+} as const;
+
+/**
+ * 조건 타입 상수
+ */
+export const CONDITION_TYPES = {
+  CUMULATIVE: 'cumulative',
+  ONCE: 'once',
+} as const;

@@ -1,111 +1,130 @@
-# Session 1: NestJS 인증 시스템 구현
+# Auth 서버 구현 세션 1
 
-## 작업 요약
+## 구현 목표
 
-이 세션에서는 NestJS 모노레포에서 인증 시스템을 구현했습니다. 주요 기능으로 사용자 등록 및 로그인, JWT 토큰 발급, 이벤트 처리, 그리고 Swagger 문서 생성이 포함되었습니다. Nestia를 사용하여 타입 안전한 API를 구현하고, 타입 기반 검증을 적용했습니다.
+이벤트/리워드 관리 플랫폼의 NestJS 모노레포에서 Auth 서버의 사용자 등록(POST /api/v1/auth/register)과 로그인(POST /api/v1/auth/login) 기능을 구현하였습니다. Nestia를 사용하여 타입 안전한 컨트롤러와 Swagger 문서를 생성하고, Typia 태그로 DTO 검증, JWT를 활용한 인증 시스템을 구현하였습니다.
 
-## 구현된 기능
+## 구현 내용
 
-### 사용자 인증
-- **사용자 등록**: `POST /auth/register` 엔드포인트 구현
-- **사용자 로그인**: `POST /auth/login` 엔드포인트 구현
-- **JWT 인증**: 토큰 생성 및 검증 로직 구현
+### 1. 영속성 관리
 
-### 이벤트 처리
-- BullMQ 대신 `@nestjs/event-emitter`를 사용하여 이벤트 처리
-- 사용자 생성 시 `user.created` 이벤트 발생
+- MongoDB 연결 설정 구현 (`libs/config/mongodb.config.ts`)
+  - 환경별(dev, live) 설정 관리
+- 사용자 스키마 정의 (`libs/common/schemas/user.schema.ts`)
+  - 이메일, 비밀번호, 역할 정보 포함
+  - 스키마를 libs 디렉토리로 이동하여 재사용성 향상
 
-### 데이터 검증
-- Nestia의 타입 태그를 사용한 DTO 검증 구현
-- 이메일 형식, 비밀번호 길이 등 자동 검증
+### 2. 인증 기능
 
-### Swagger 문서화
-- Nestia를 사용한 API 문서 자동 생성
-- 멀티 서비스 지원 Swagger UI 서버 구현
+- JWT 설정 구현 (`libs/common/config/jwt.config.ts`)
+  - 환경별 설정 관리
+  - 토큰 만료 시간 설정
+- JWT 전략 구현 (`libs/common/auth/jwt.strategy.ts`)
+  - 토큰 추출 및 검증 로직
+- JWT 가드 구현 (`libs/common/auth/jwt.guard.ts`)
+  - 보호된 라우트 접근 제어
 
-## 프로젝트 구조
+### 3. DTO 정의
 
-### 모노레포 구성
-- **apps/auth**: 인증 서비스
-- **libs/shared**: 공유 라이브러리 (DTO, 설정 등)
-- **executable/swagger.ts**: Swagger UI 서버
+- 사용자 DTO 정의 (`libs/common/dto/auth/user.dto.ts`)
+  - `CreateUserDto`: 사용자 등록 DTO
+  - `LoginUserDto`: 사용자 로그인 DTO
+  - `UserResponseDto`: 사용자 응답 DTO
+  - Typia 태그를 사용한 유효성 검사 추가 (이메일 형식 검증)
 
-### 주요 파일
+### 4. 서비스 구현
 
-#### Auth 서비스
-- **auth.controller.ts**: 인증 엔드포인트 정의
-- **auth.service.ts**: 인증 비즈니스 로직
-- **auth.module.ts**: 모듈 설정
-- **schemas/user.schema.ts**: MongoDB 사용자 스키마
+- Auth 서비스 구현 (`apps/auth/src/auth/auth.service.ts`)
+  - 사용자 등록 기능
+    - 이메일 중복 확인
+    - 비밀번호 해싱 (bcrypt)
+    - 사용자 생성 및 JWT 토큰 발행
+  - 사용자 로그인 기능
+    - 사용자 자격 증명 검증
+    - JWT 토큰 발행
 
-#### 공유 라이브러리
-- **dtos/user.dto.ts**: 사용자 관련 DTO 및 검증 규칙
-- **config/index.ts**: 공유 설정
+### 5. 컨트롤러 구현
 
-## 기술 스택
+- Auth 컨트롤러 구현 (`apps/auth/src/auth/auth.controller.ts`)
+  - `POST /api/v1/auth/register`: 사용자 등록 엔드포인트
+  - `POST /api/v1/auth/login`: 사용자 로그인 엔드포인트
+  - Nestia `TypedRoute`, `TypedBody`를 사용한 타입 안전성 확보
+  - Swagger 문서화를 위한 태그 추가 (`@tag public`, `@security bearer`)
 
-- **NestJS**: 백엔드 프레임워크
-- **MongoDB**: 데이터베이스
-- **Mongoose**: ODM
-- **JWT**: 인증
-- **EventEmitter**: 이벤트 처리
-- **Nestia**: API 타입 안전성 및 문서화
-- **Docker**: 컨테이너화
+### 6. 애플리케이션 설정
 
-## 구현 세부 사항
+- 메인 모듈 설정 (`apps/auth/src/main.module.ts`)
+  - MongoDB 연결 설정
+  - Auth 모듈 등록
+- 메인 엔트리 포인트 설정 (`apps/auth/src/main.ts`)
+  - API 경로에 전역 prefix 설정 (`api`)
+  - URI 버전닝 설정 (`v1`)
 
-### 타입 기반 검증
-```typescript
-export interface CreateUserDto {
-  /**
-   * User's email address
-   */
-  email: string & tags.Format<'email'>;
+### 7. 테스트 설정
 
-  /**
-   * User's password (minimum 8 characters)
-   */
-  password: string & tags.MinLength<8>;
+- HTTP 테스트 파일 추가 (`http/auth.http`)
+  - 사용자 등록 및 로그인 API 테스트
 
-  /**
-   * User's role in the system
-   */
-  role: UserRole;
-}
-```
+### 8. 환경 설정 변경
 
-### 에러 처리
-- `TypedException` 데코레이터를 사용한 예외 처리
-- 비표준 형식에서 표준 형식으로 업데이트
+- 운영 환경 설정 변경
+  - `local`, `docker`, `stage`, `production` 에서 `dev`, `live`로 변경
+  - 패키지 스크립트 명령어 수정
 
-```typescript
-@TypedException<HttpError>({
-  status: 400,
-  description: '잘못된 요청',
-  example: { message: '잘못된 사용자 데이터' },
-})
-```
+## 주요 파일 구조
+/apps /auth /src /auth auth.controller.ts # 인증 컨트롤러
+auth.module.ts # 인증 모듈
+auth.service.ts # 인증 서비스
+main.module.ts # 메인 모듈
+main.ts # 엔트리 포인트
+/libs /common /auth auth.module.ts # 공통 인증 모듈
+jwt.strategy.ts # JWT 전략
+jwt.guard.ts # JWT 가드
+/config jwt.config.ts # JWT 설정
+/constants events.ts # 이벤트 상수
+/dto /auth user.dto.ts # 사용자 DTO
+/schemas user.schema.ts # 사용자 스키마
+/config mongodb.config.ts # MongoDB 설정
+bullmq.config.ts # BullMQ 설정
+/http auth.http # HTTP 테스트 파일
 
-### Swagger 설정
-- 멀티 서비스 지원 설정
-- 보안 스키마 설정 (Bearer 인증)
+## 구현 특징
 
-## 해결된 문제
+1. **모듈화**: 영속성 데이터 모델과 설정을 libs 디렉토리로 이동하여 재사용성 향상
+2. **타입 안전성**: Nestia와 Typia를 활용하여 타입 안전한 API 구현
+3. **환경별 설정**: 개발(dev)과 운영(live) 환경에 따른 구성 설정 관리
+4. **API 문서화**: Swagger 태그를 활용한 API 문서화 구현
+5. **보안**: bcrypt를 사용한 비밀번호 해싱, JWT를 활용한 인증 시스템 구현
 
-1. **모듈 해결 문제**: `@event-reward/shared` 모듈 참조 문제 해결
-2. **Swagger 생성 오류**: Nestia 설정 문제 해결
-3. **타입 검증**: 수동 검증에서 타입 기반 자동 검증으로 전환
-4. **Swagger UI**: 멀티 서비스 지원 서버 구현 및 경로 해결 문제 수정
+## 테스트 방법
 
-## 다음 단계
+1. 서버 실행:
+   ```bash
+   yarn start:auth  # 개발 환경 (dev)
+   yarn start:auth:live  # 운영 환경 (live)
+   ```
 
-1. **RBAC 구현**: 역할 기반 접근 제어 시스템 구현
-2. **Gateway 서비스**: API 게이트웨이 구현
-3. **Event 서비스**: 이벤트 처리 서비스 구현
-4. **테스트 작성**: 단위 및 통합 테스트 추가
+2. HTTP 테스트:
+# 사용자 등록
+curl -X POST http://localhost:3001/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "password123",ㅗ
+    "role": "user"
+  }'
 
-## 참고 사항
+# 사용자 로그인
+curl -X POST http://localhost:3001/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "password123"
+  }'
 
-- Nestia 설정은 `apps/auth/nestia.config.ts`에 정의
-- Swagger UI는 `http://localhost:37812/api-docs`에서 접근 가능
-- 인증 서비스는 포트 3001에서 실행
+## 향후 계획
+사용자 프로필 관리 API 추가
+비밀번호 변경/초기화 기능 구현
+이메일 인증 기능 구현
+토큰 갱신 기능 구현
+로그아웃 기능 구현
