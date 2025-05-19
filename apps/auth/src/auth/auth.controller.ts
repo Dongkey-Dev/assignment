@@ -7,11 +7,7 @@ import {
   UserResponseDto,
 } from '@libs/common/dto/auth/user.dto';
 
-/**
- * @tag public
- * @security bearer
- */
-@Controller({ path: 'auth', version: '1' })
+@Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

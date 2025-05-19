@@ -6,16 +6,14 @@ import {
   EventResponseDto,
 } from '@libs/shared/src/dtos/event.dto';
 
-/**
- * @tag events
- * @security bearer
- */
-@Controller({ path: 'events', version: '1' })
+@Controller('api/v1/events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   /**
    * 이벤트 등록
+   * @tag events
+   * @security bearer
    * @summary 새로운 이벤트를 등록합니다
    */
   @TypedRoute.Post()
@@ -27,6 +25,8 @@ export class EventsController {
 
   /**
    * 이벤트 조회
+   * @tag events
+   * @security bearer
    * @summary ID로 이벤트를 조회합니다
    */
   @TypedRoute.Get(':id')
@@ -36,6 +36,8 @@ export class EventsController {
 
   /**
    * 전체 이벤트 조회
+   * @tag events
+   * @security bearer
    * @summary 모든 이벤트 목록을 조회합니다
    */
   @TypedRoute.Get()

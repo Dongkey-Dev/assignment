@@ -9,7 +9,7 @@ import {
 /**
  * @tag events
  */
-@Controller({ path: 'events', version: '1' })
+@Controller('api/v1/events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 

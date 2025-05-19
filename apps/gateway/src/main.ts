@@ -1,9 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { MainModule } from './main.module';
 import { ProxyMiddleware } from './middleware/proxy.middleware';
-import { Logger, VersioningType } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { NestiaSwaggerComposer } from '@nestia/sdk';
 import { SwaggerModule } from '@nestjs/swagger';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -21,13 +22,10 @@ async function bootstrap() {
     ],
   });
 
-  // 버전닝 설정
-  app.enableVersioning({
-    type: VersioningType.URI,
-    defaultVersion: '1',
-    prefix: 'api',
-  });
-
+  // body-parser 설정 (요청 본문 파싱을 위해)
+  app.use(bodyParser.json({ limit: '50mb' }));
+  app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+  
   SwaggerModule.setup('api-docs', app, document as any);
   // CORS 설정
   app.enableCors();

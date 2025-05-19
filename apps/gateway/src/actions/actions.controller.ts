@@ -3,16 +3,13 @@ import { ActionsService } from './actions.service';
 import { TypedRoute, TypedBody } from '@nestia/core';
 import { MockActionDto } from '@libs/shared/src/dtos/action.dto';
 
-/**
- * @tag actions
- * @security bearer
- */
-@Controller({ path: 'actions', version: '1' })
+@Controller('api/v1/actions')
 export class ActionsController {
   constructor(private readonly actionsService: ActionsService) {}
 
   /**
    * 유저 행동 모킹
+   * @tag actions
    * @summary 테스트를 위한 사용자 행동을 모킹합니다
    */
   @TypedRoute.Post('mock')

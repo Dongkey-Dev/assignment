@@ -8,16 +8,14 @@ import {
   RewardHistoryResponseDto,
 } from '@libs/shared/src/dtos/reward.dto';
 
-/**
- * @tag rewards
- * @security bearer
- */
-@Controller({ path: 'rewards', version: '1' })
+@Controller('api/v1/rewards')
 export class RewardsController {
   constructor(private readonly rewardsService: RewardsService) {}
 
   /**
    * 보상 등록
+   * @tag rewards
+   * @security bearer
    * @summary 새로운 보상을 등록합니다
    */
   @TypedRoute.Post()
@@ -29,6 +27,8 @@ export class RewardsController {
 
   /**
    * 보상 조회
+   * @tag rewards
+   * @security bearer
    * @summary ID로 보상을 조회합니다
    */
   @TypedRoute.Get(':id')
@@ -38,6 +38,8 @@ export class RewardsController {
 
   /**
    * 이벤트별 보상 조회
+   * @tag rewards
+   * @security bearer
    * @summary 이벤트 ID로 보상 목록을 조회합니다
    */
   @TypedRoute.Get('event/:eventId')
@@ -49,6 +51,8 @@ export class RewardsController {
 
   /**
    * 보상 요청
+   * @tag rewards
+   * @security bearer
    * @summary 조건을 충족한 이벤트의 보상을 요청합니다
    */
   @TypedRoute.Post('request')
@@ -60,6 +64,8 @@ export class RewardsController {
 
   /**
    * 보상 이력 조회
+   * @tag rewards
+   * @security bearer
    * @summary 사용자의 보상 이력을 조회합니다
    */
   @TypedRoute.Get('history/:userId')

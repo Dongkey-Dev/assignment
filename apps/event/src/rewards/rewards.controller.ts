@@ -12,7 +12,7 @@ import {
 /**
  * @tag rewards
  */
-@Controller({ path: 'rewards', version: '1' })
+@Controller('api/v1/rewards')
 export class RewardsController {
   constructor(private readonly rewardsService: RewardsService) {}
 

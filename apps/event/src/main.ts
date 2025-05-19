@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger, VersioningType } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { MainModule } from './main.module';
 
 async function bootstrap() {
@@ -9,15 +9,7 @@ async function bootstrap() {
   // Enable CORS
   app.enableCors();
 
-  // Enable API versioning
-  app.enableVersioning({
-    type: VersioningType.URI,
-    prefix: 'api',
-  });
-
-  Logger.log(
-    `Event Server is running on http://${process.env.HOST}:${port}/api/v1`,
-  );
+  Logger.log(`Event Server is running on http://${process.env.HOST}:${port}`);
   await app.listen(port); // Use port 3003 for event server
 }
 
