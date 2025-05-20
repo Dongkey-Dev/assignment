@@ -81,8 +81,6 @@ export const PATH_ROLE_MAP: Record<string, UserRole[]> = {
  * Pattern information for mapping routes with wildcards or parameters to their normalized form
  */
 export const PATH_PATTERNS = [
-  // Order matters! More specific patterns must come first
-  // Reward history endpoints - using exact path matching without regex
   {
     pattern: '/api/v1/rewards/histories/me',
   },

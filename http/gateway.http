@@ -1,6 +1,6 @@
 ### 환경 변수 설정
 @baseUrl = http://localhost:3002/api/v1
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiMzUzNTBhNzAzMzU5YjZkNzI3YjUiLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ3NzAzNDI5LCJleHAiOjE3NDc3ODk4Mjl9.BTM5wz34H380Y7YfT5ax_ugkZdH7pD3r0BVpZDa-O5o
+@authToken = eyJh
 @userId = user123
 @eventId = 682b353aa158c246dad7cdb0
 @conditionId = condition123
