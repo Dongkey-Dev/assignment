@@ -1,8 +1,8 @@
 ### 환경 변수 설정
 @baseUrl = http://localhost:3002/api/v1
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQ1Njc4OTAiLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2MjA5MjIwMDAsImV4cCI6MTYyMTAwODQwMH0.YOUR_MOCK_TOKEN_SIGNATURE
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2ODJiMzUzNTBhNzAzMzU5YjZkNzI3YjUiLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzQ3NzAzNDI5LCJleHAiOjE3NDc3ODk4Mjl9.BTM5wz34H380Y7YfT5ax_ugkZdH7pD3r0BVpZDa-O5o
 @userId = user123
-@eventId = event123
+@eventId = 682b353aa158c246dad7cdb0
 @conditionId = condition123
 @rewardId = reward123
 @rewardHistoryId = rewardHistory123
@@ -30,7 +30,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "test@example.com",
+  "email": "admin@example.com",
   "password": "password123"
 }
 
@@ -170,6 +170,18 @@ Authorization: Bearer {{authToken}}
 
 ###
 
-# 보상 이력 조회
-GET {{baseUrl}}/rewards/history/user123
+# 보상 이력 조회 (특정 사용자)
+GET {{baseUrl}}/rewards/histories?userId=user123
+Authorization: Bearer {{authToken}}
+
+###
+
+# 보상 이력 조회 (전체)
+GET {{baseUrl}}/rewards/histories
+Authorization: Bearer {{authToken}}
+
+###
+
+# 보상 이력 조회 (현재 사용자)
+GET {{baseUrl}}/rewards/histories/me
 Authorization: Bearer {{authToken}}

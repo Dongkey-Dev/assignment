@@ -1,5 +1,5 @@
 {
-  "name": "event-reward",
+  "name": "event-reward-management-system",
   "version": "0.0.1",
   "description": "",
   "author": "DongkeyDev",
@@ -23,6 +23,8 @@
     "test:cov": "jest --coverage --forceExit",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand --forceExit",
     "test:e2e": "jest --config ./test/jest-e2e.json --forceExit",
+    "test:e2e:nestia": "ts-node test/e2e-runner.ts",
+    "test:e2e:nestia:docker": "docker-compose up -d && ts-node test/e2e-runner.ts && docker-compose down",
     "prepare": "ts-patch install && typia patch",
     "swagger": "npx nestia swagger --config nestia.config.ts --config nestia-cli.config.json --project tsconfig.json",
     "sdk": "npx nestia sdk --config nestia.config.ts --project tsconfig.json",
@@ -118,7 +120,9 @@
       "^@event(|/.*)$": "<rootDir>/apps/event$1",
       "^@gateway(|/.*)$": "<rootDir>/apps/gateway$1",
       "^@libs(|/.*)$": "<rootDir>/libs$1",
-      "^@shared(|/.*)$": "<rootDir>/libs/shared$1"
+      "^@shared(|/.*)$": "<rootDir>/libs/shared$1",
+      "^@constants(|/.*)$": "<rootDir>/libs/common/constants$1",
+      "^@api(|/.*)$": "<rootDir>/api$1"
     }
   },
   "resolutions": {

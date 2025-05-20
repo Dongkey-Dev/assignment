@@ -1,10 +1,10 @@
-import typia from 'typia';
+import typia, { tags } from 'typia';
 
 export interface CreateRewardDto {
   /**
    * Event ID
    */
-  eventId: string;
+  eventId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * Reward name
@@ -44,31 +44,31 @@ export interface CreateRewardDto {
     /**
      * Start date
      */
-    start: Date;
+    start: Date | (tags.Format<'date-time'> & string);
 
     /**
      * End date
      */
-    end: Date;
+    end: Date | (tags.Format<'date-time'> & string);
   };
 
   /**
    * Reward status
    * @type 'active' | 'inactive'
    */
-  status: string;
+  status: 'active' | 'inactive';
 }
 
 export interface RewardResponseDto {
   /**
    * Reward ID
    */
-  id: string;
+  id: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * Event ID
    */
-  eventId: string;
+  eventId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * Reward name
@@ -97,8 +97,8 @@ export interface RewardResponseDto {
    * Reward period
    */
   period?: {
-    start: Date;
-    end: Date;
+    start: Date | (tags.Format<'date-time'> & string);
+    end: Date | (tags.Format<'date-time'> & string);
   };
 
   /**
@@ -109,53 +109,54 @@ export interface RewardResponseDto {
   /**
    * Creation date
    */
-  createdAt: Date;
+  createdAt: Date | (tags.Format<'date-time'> & string);
 
   /**
    * Update date
    */
-  updatedAt: Date;
+  updatedAt: Date | (tags.Format<'date-time'> & string);
 }
 
 export interface RequestRewardDto {
   /**
    * Event ID
    */
-  eventId: string;
+  eventId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * User ID
    */
-  userId: string;
+  userId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 }
 
 export interface RewardHistoryQueryDto {
   /**
    * User ID (optional)
+   * Using tags.Nullable to make it truly optional (can be undefined)
    */
-  userId?: string;
+  userId?: (string & tags.Pattern<'^[a-fA-F0-9]{24}$'>) | undefined;
 }
 
 export interface RewardHistoryResponseDto {
   /**
    * Reward history ID
    */
-  id: string;
+  id: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * User ID
    */
-  userId: string;
+  userId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * Event ID
    */
-  eventId: string;
+  eventId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * Reward ID
    */
-  rewardId: string;
+  rewardId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * Reward information
@@ -166,15 +167,15 @@ export interface RewardHistoryResponseDto {
    * Status
    * @type 'pending' | 'completed' | 'failed'
    */
-  status: string;
+  status: 'pending' | 'completed' | 'failed' | string;
 
   /**
    * Creation date
    */
-  createdAt: Date;
+  createdAt: Date | (tags.Format<'date-time'> & string);
 
   /**
    * Update date
    */
-  updatedAt: Date;
+  updatedAt: Date | (tags.Format<'date-time'> & string);
 }

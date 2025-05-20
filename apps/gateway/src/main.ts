@@ -25,7 +25,6 @@ async function bootstrap() {
   // body-parser 설정 (요청 본문 파싱을 위해)
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
-  
   SwaggerModule.setup('api-docs', app, document as any);
   // CORS 설정
   app.enableCors();

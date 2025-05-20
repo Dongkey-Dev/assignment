@@ -22,13 +22,18 @@ export class ProxyMiddleware implements NestMiddleware {
 
   constructor(private readonly jwtService: JwtService) {}
 
-  async use(req: Request, res: Response, _next: NextFunction) {
+  async use(req: Request, res: Response, next: NextFunction) {
     const { path, method } = req;
 
     this.logger.log(`Received request: ${method} ${path}`);
     this.logger.log(`URL: ${req.url}`);
     this.logger.log(`Body: ${JSON.stringify(req.body)}`);
     this.logger.log(`Headers: ${JSON.stringify(req.headers)}`);
+
+    // Exclude health endpoint from proxy routing
+    if (path === '/health') {
+      return next();
+    }
 
     // 요청 경로에 맞는 대상 서버 찾기
     const routeConfig = this.findTargetRoute(path);
@@ -52,35 +57,29 @@ export class ProxyMiddleware implements NestMiddleware {
         // 토큰 검증 및 사용자 정보 추출
         const payload = await this.jwtService.verifyAsync(token);
         req['user'] = payload;
-        
-        // 토큰 페이로드 디버깅
-        this.logger.debug(`Token payload: ${JSON.stringify(payload)}`);
-        
+
         // 단일 role을 roles 배열로 변환 (하위 호환성 유지)
         const userRoles = payload.roles || (payload.role ? [payload.role] : []);
-        this.logger.debug(`User roles: ${JSON.stringify(userRoles)}`);
 
         // 역할 기반 접근 제어 (RBAC)
         // 경로와 메서드를 함께 고려하여 권한 확인
         const normalizedPath = this.normalizePath(req.path);
-        this.logger.debug(`Original path: ${req.path}, Normalized path: ${normalizedPath}`);
-        
         const roleKey = `${normalizedPath}:${req.method}`;
-        this.logger.debug(`Role key for permission check: ${roleKey}`);
-        
+
         try {
           if (!this.hasRequiredRole(roleKey, userRoles)) {
-            this.logger.warn(`Access denied: User with roles [${userRoles}] does not have required permissions for ${roleKey}`);
+            this.logger.warn(
+              `Access denied: User with roles [${userRoles}] does not have required permissions for ${roleKey}`,
+            );
             throw new ForbiddenException('Insufficient permissions');
           }
-          this.logger.debug(`Access granted: User has required permissions for ${roleKey}`);
         } catch (roleError: unknown) {
           if (roleError instanceof ForbiddenException) {
             throw roleError; // 권한 없음 예외 그대로 전달
           }
-          // 기타 오류는 로그만 출력하고 접근 허용 (안전성 고려)
-          this.logger.error(`Error during role check: ${(roleError as Error).message}`);
-          this.logger.debug(`Allowing access despite role check error`);
+          this.logger.error(
+            `Error during role check: ${(roleError as Error).message}`,
+          );
         }
       } catch (error: unknown) {
         if (
@@ -151,32 +150,35 @@ export class ProxyMiddleware implements NestMiddleware {
     return authHeader.substring(7); // 'Bearer ' 이후의 토큰 부분 추출
   }
 
-  private hasRequiredRole(roleKey: string, userRoles: UserRole[] | undefined): boolean {
+  private hasRequiredRole(
+    roleKey: string,
+    userRoles: UserRole[] | undefined,
+  ): boolean {
     // userRoles 유효성 검사
     if (!userRoles || !Array.isArray(userRoles)) {
       this.logger.warn(`Invalid userRoles: ${JSON.stringify(userRoles)}`);
       // 유효하지 않은 경우 빈 배열로 처리
       userRoles = [];
     }
-    
+
     // PATH_ROLE_MAP 유효성 검사
-    this.logger.debug(`Checking role access for path: ${roleKey}`);
-    this.logger.debug(`PATH_ROLE_MAP exists: ${!!PATH_ROLE_MAP}`);
-    
-    // 정확한 경로+메서드 매칭 확인
     if (PATH_ROLE_MAP && PATH_ROLE_MAP[roleKey]) {
       const requiredRoles = PATH_ROLE_MAP[roleKey];
-      this.logger.debug(`Required roles for ${roleKey}: ${JSON.stringify(requiredRoles)}`);
-      this.logger.debug(`User roles: ${JSON.stringify(userRoles)}`);
-      
+
       // 안전한 some 메서드 사용
-      return Array.isArray(userRoles) && userRoles.length > 0 && 
-        Array.isArray(requiredRoles) && requiredRoles.length > 0 &&
-        userRoles.some(role => requiredRoles.includes(role));
+      return (
+        Array.isArray(userRoles) &&
+        userRoles.length > 0 &&
+        Array.isArray(requiredRoles) &&
+        requiredRoles.length > 0 &&
+        userRoles.some((role) => requiredRoles.includes(role))
+      );
     }
-    
+
     // 기본적으로 모든 인증된 사용자에게 접근 허용 (필요에 따라 변경 가능)
-    this.logger.debug(`No specific roles required for ${roleKey}, allowing access`);
+    this.logger.debug(
+      `No specific roles required for ${roleKey}, allowing access`,
+    );
     return true;
   }
 
@@ -196,8 +198,16 @@ export class ProxyMiddleware implements NestMiddleware {
     // 메서드 부분 제거
     const pathWithoutMethod = path.replace(/:[A-Z]+$/, '');
     // 패턴 매칭을 통해 경로 정규화
-    for (const { pattern, paramRegex } of PATH_PATTERNS) {
-      if (paramRegex.test(pathWithoutMethod)) {
+    for (const patternObj of PATH_PATTERNS) {
+      const { pattern, paramRegex } = patternObj;
+
+      // 정확한 경로 매칭 (paramRegex가 없는 경우)
+      if (!paramRegex && pathWithoutMethod === pattern) {
+        return pattern;
+      }
+
+      // 정규식 패턴 매칭 (paramRegex가 있는 경우)
+      if (paramRegex && paramRegex.test(pathWithoutMethod)) {
         return pattern;
       }
     }
@@ -224,14 +234,9 @@ export class ProxyMiddleware implements NestMiddleware {
     // 원래 요청 경로에서 API 버전 접두사를 유지하면서 대상 서버 URL 생성
     const url = `${targetUrl}${path}`;
 
-    // body 디버깅 로그 추가
-    this.logger.debug(`Request body type: ${typeof body}`);
-    this.logger.debug(`Request body content: ${body ? JSON.stringify(body, null, 2) : 'undefined'}`);
-    
     // Express의 body-parser 미들웨어가 처리한 body 객체 사용
     // body가 undefined인 경우 빈 객체를 기본값으로 사용
     const requestBody = req.body || {};
-    this.logger.debug(`Express parsed body: ${JSON.stringify(requestBody, null, 2)}`);
 
     // 요청 설정
     const config: AxiosRequestConfig = {
@@ -252,7 +257,9 @@ export class ProxyMiddleware implements NestMiddleware {
     }
 
     // 안전하게 로그 출력 (requestBody가 undefined일 수 있음)
-    const bodyLog = requestBody ? `with body: ${JSON.stringify(requestBody).substring(0, 200)}${JSON.stringify(requestBody).length > 200 ? '...' : ''}` : 'with empty body';
+    const bodyLog = requestBody
+      ? `with body: ${JSON.stringify(requestBody).substring(0, 200)}${JSON.stringify(requestBody).length > 200 ? '...' : ''}`
+      : 'with empty body';
     this.logger.log(`Forwarding request to: ${method} ${url} ${bodyLog}`);
     return axios(config);
   }

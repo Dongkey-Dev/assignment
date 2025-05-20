@@ -17,6 +17,7 @@ import {
   RewardHistoryResponseDto,
 } from '@libs/shared/src/dtos/reward.dto';
 import { RewardsConditionCheckerService } from 'apps/event/src/rewards/rewards-condition-checker.service';
+import { tags } from 'typia';
 
 @Injectable()
 export class RewardsService {
@@ -156,7 +157,9 @@ export class RewardsService {
     return this.mapToRewardHistoryResponseDto(savedHistory);
   }
 
-  async getRewardHistory(userId?: string): Promise<RewardHistoryResponseDto[]> {
+  async getRewardHistory(
+    userId?: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>,
+  ): Promise<RewardHistoryResponseDto[]> {
     // Build query based on optional userId filter
     const query = userId ? { userId } : {};
 

@@ -1,39 +1,64 @@
 import { Controller } from '@nestjs/common';
-import { RewardsService } from './rewards.service';
-import { TypedRoute, TypedBody, TypedParam } from '@nestia/core';
+import { TypedRoute, TypedBody, TypedParam, TypedQuery } from '@nestia/core';
 import {
   CreateRewardDto,
   RewardResponseDto,
   RequestRewardDto,
   RewardHistoryResponseDto,
+  RewardHistoryQueryDto,
 } from '@libs/shared/src/dtos/reward.dto';
+import { tags } from 'typia';
 
 @Controller('api/v1/rewards')
 export class RewardsController {
-  constructor(private readonly rewardsService: RewardsService) {}
+  constructor() {}
 
   /**
    * 보상 등록
+   *
+   * type: 'POINT' | 'ITEM' | 'COUPON'
+   *
+   * value.amount: 보상 금액
+   *
+   * value.metadata: 보상 추가 정보
+   *
+   * period.start: 보상 시작 시간
+   *
+   * period.end: 보상 종료 시간
+   *
+   * status: 'active' | 'inactive'
+   *
    * @tag rewards
    * @security bearer
    * @summary 새로운 보상을 등록합니다
    */
   @TypedRoute.Post()
   async createReward(
-    @TypedBody() createRewardDto: CreateRewardDto,
+    @TypedBody() _createRewardDto: CreateRewardDto,
   ): Promise<RewardResponseDto> {
-    return this.rewardsService.createReward(createRewardDto);
+    return {} as unknown as RewardResponseDto;
   }
 
   /**
-   * 보상 조회
+   * 보상 이력 조회 (관리자/감사자/운영자 전용)
    * @tag rewards
    * @security bearer
-   * @summary ID로 보상을 조회합니다
+   * @summary 보상 이력을 조회합니다. 선택적으로 userId 파라미터를 제공하여 특정 사용자의 이력만 조회할 수 있습니다.
    */
-  @TypedRoute.Get(':id')
-  async getReward(@TypedParam('id') id: string): Promise<RewardResponseDto> {
-    return this.rewardsService.getRewardById(id);
+  @TypedRoute.Get('histories')
+  async getAllRewardHistory(): Promise<RewardHistoryResponseDto[]> {
+    return [] as unknown as RewardHistoryResponseDto[];
+  }
+
+  /**
+   * 현재 로그인한 사용자의 보상 이력 조회
+   * @tag rewards
+   * @security bearer
+   * @summary 현재 로그인한 사용자의 보상 이력을 조회합니다
+   */
+  @TypedRoute.Get('histories/me')
+  async getMyRewardHistory(): Promise<RewardHistoryResponseDto[]> {
+    return [] as unknown as RewardHistoryResponseDto[];
   }
 
   /**
@@ -44,9 +69,9 @@ export class RewardsController {
    */
   @TypedRoute.Get('event/:eventId')
   async getRewardsByEvent(
-    @TypedParam('eventId') eventId: string,
+    @TypedParam('eventId') _eventId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>,
   ): Promise<RewardResponseDto[]> {
-    return this.rewardsService.getRewardsByEventId(eventId);
+    return [] as unknown as RewardResponseDto[];
   }
 
   /**
@@ -57,21 +82,21 @@ export class RewardsController {
    */
   @TypedRoute.Post('request')
   async requestReward(
-    @TypedBody() requestRewardDto: RequestRewardDto,
+    @TypedBody() _requestRewardDto: RequestRewardDto,
   ): Promise<RewardHistoryResponseDto> {
-    return this.rewardsService.requestReward(requestRewardDto);
+    return {} as unknown as RewardHistoryResponseDto;
   }
 
   /**
-   * 보상 이력 조회
+   * 보상 조회
    * @tag rewards
    * @security bearer
-   * @summary 사용자의 보상 이력을 조회합니다
+   * @summary ID로 보상을 조회합니다
    */
-  @TypedRoute.Get('history/:userId')
-  async getRewardHistory(
-    @TypedParam('userId') userId: string,
-  ): Promise<RewardHistoryResponseDto[]> {
-    return this.rewardsService.getRewardHistory(userId);
+  @TypedRoute.Get(':id')
+  async getReward(
+    @TypedParam('id') _id: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>,
+  ): Promise<RewardResponseDto> {
+    return {} as unknown as RewardResponseDto;
   }
 }

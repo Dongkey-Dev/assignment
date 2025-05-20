@@ -9,7 +9,7 @@ export class Condition extends Document<string> {
   @Prop({ required: true })
   actionType!: string;
 
-  @Prop({ required: true, enum: ['cumulative', 'once'] })
+  @Prop({ required: true })
   conditionType!: string;
 
   @Prop({ required: true })

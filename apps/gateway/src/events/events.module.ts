@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { EventsController } from './events.controller';
-import { EventsService } from './events.service';
 import { Event, EventSchema } from '@libs/common/schemas/event.schema';
 import {
   Condition,
@@ -19,7 +18,5 @@ import { jwtConfig } from '@libs/common/config/jwt.config';
     JwtModule.registerAsync(jwtConfig),
   ],
   controllers: [EventsController],
-  providers: [EventsService],
-  exports: [EventsService],
 })
 export class EventsModule {}

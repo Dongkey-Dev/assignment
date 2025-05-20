@@ -5,6 +5,7 @@ import {
   CreateEventDto,
   EventResponseDto,
 } from '@libs/shared/src/dtos/event.dto';
+import { tags } from 'typia';
 
 /**
  * @tag events
@@ -29,7 +30,9 @@ export class EventsController {
    * @summary ID로 이벤트를 조회합니다
    */
   @TypedRoute.Get(':id')
-  async getEvent(@TypedParam('id') id: string): Promise<EventResponseDto> {
+  async getEvent(
+    @TypedParam('id') id: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>,
+  ): Promise<EventResponseDto> {
     return this.eventsService.getEventById(id);
   }
 

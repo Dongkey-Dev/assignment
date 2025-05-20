@@ -62,7 +62,5 @@ localdb
 localdb/*
 files
 files/*
-api
-api/*
 
 swagger.json

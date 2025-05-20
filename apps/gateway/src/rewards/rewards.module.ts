@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { RewardsController } from './rewards.controller';
-import { RewardsService } from './rewards.service';
 import { Reward, RewardSchema } from '@libs/common/schemas/reward.schema';
 import {
   RewardHistory,
@@ -40,6 +39,5 @@ import {
     EventsModule,
   ],
   controllers: [RewardsController],
-  providers: [RewardsService],
 })
 export class RewardsModule {}

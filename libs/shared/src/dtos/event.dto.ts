@@ -1,4 +1,5 @@
 import { CONDITION_TYPES } from '@constants/events';
+import { tags } from 'typia';
 
 export interface CreateEventDto {
   /**
@@ -14,18 +15,18 @@ export interface CreateEventDto {
   /**
    * Event start date
    */
-  startDate: Date;
+  startDate: Date | (tags.Format<'date-time'> & string);
 
   /**
    * Event end date
    */
-  endDate: Date;
+  endDate: Date | (tags.Format<'date-time'> & string);
 
   /**
    * Event status
    * @type 'active' | 'inactive'
    */
-  status: string;
+  status: 'active' | 'inactive';
 
   /**
    * Event conditions list
@@ -33,7 +34,7 @@ export interface CreateEventDto {
   conditions: {
     /**
      * Action type
-     * @type 'LOGIN' | 'PURCHASE' | 'INVITE_FRIEND'
+     * @type 'LOGIN' | 'PURCHASE' | 'INVITE_FRIEND' | 'ACHIEVEMENT'
      */
     actionType: string;
 
@@ -84,19 +85,19 @@ export interface CreateEventDto {
       /**
        * Start date
        */
-      start: Date;
+      start: Date | (tags.Format<'date-time'> & string);
 
       /**
        * End date
        */
-      end: Date;
+      end: Date | (tags.Format<'date-time'> & string);
     };
 
     /**
      * Condition status
      * @type 'active' | 'inactive'
      */
-    status: string;
+    status: 'active' | 'inactive';
   }[];
 }
 
@@ -104,7 +105,7 @@ export interface EventResponseDto {
   /**
    * Event ID
    */
-  id: string;
+  id: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * Event name
@@ -119,30 +120,30 @@ export interface EventResponseDto {
   /**
    * Event start date
    */
-  startDate: Date;
+  startDate: Date | (tags.Format<'date-time'> & string);
 
   /**
    * Event end date
    */
-  endDate: Date;
+  endDate: Date | (tags.Format<'date-time'> & string);
 
   /**
    * Event status
    */
-  status: string;
+  status: 'active' | 'inactive';
 
   /**
    * Event condition IDs list
    */
-  conditionIds: string[];
+  conditionIds: (string & tags.Pattern<'^[a-fA-F0-9]{24}$'>)[];
 
   /**
    * Creation date
    */
-  createdAt: Date;
+  createdAt: Date | (tags.Format<'date-time'> & string);
 
   /**
    * Update date
    */
-  updatedAt: Date;
+  updatedAt: Date | (tags.Format<'date-time'> & string);
 }

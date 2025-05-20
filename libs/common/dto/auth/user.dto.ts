@@ -50,7 +50,7 @@ export interface UserResponseDto {
   /**
    * 사용자 ID
    */
-  id: string;
+  id: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * 사용자 이메일

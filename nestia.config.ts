@@ -79,5 +79,6 @@ export const NESTIA_CONFIG: SDK.INestiaConfig = {
       },
     },
   },
+  e2e: 'apps',
 };
 export default NESTIA_CONFIG;

@@ -8,6 +8,7 @@ import { EventsModule } from './events/events.module';
 import { RewardsModule } from './rewards/rewards.module';
 import { getMongoConfig } from '@libs/config/mongodb.config';
 import { ProxyMiddleware } from './middleware/proxy.middleware';
+import { HealthModule } from '@libs/common/src/health';
 
 @Module({
   imports: [
@@ -34,12 +35,13 @@ import { ProxyMiddleware } from './middleware/proxy.middleware';
     ActionsModule,
     EventsModule,
     RewardsModule,
+    HealthModule,
   ],
   providers: [ProxyMiddleware],
 })
 export class MainModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    // 모든 경로에 프록시 미들웨어 적용
-    consumer.apply(ProxyMiddleware).forRoutes('*');
+    // Apply proxy middleware to all routes except /health
+    consumer.apply(ProxyMiddleware).exclude('health').forRoutes('*');
   }
 }

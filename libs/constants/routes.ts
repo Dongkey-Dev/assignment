@@ -62,7 +62,17 @@ export const PATH_ROLE_MAP: Record<string, UserRole[]> = {
     UserRole.AUDITOR,
   ],
   '/api/v1/rewards/request:POST': [UserRole.USER, UserRole.ADMIN],
-  '/api/v1/rewards/history/:userId:GET': [UserRole.AUDITOR, UserRole.ADMIN],
+  '/api/v1/rewards/histories:GET': [
+    UserRole.AUDITOR,
+    UserRole.ADMIN,
+    UserRole.OPERATOR,
+  ],
+  '/api/v1/rewards/histories/me:GET': [
+    UserRole.USER,
+    UserRole.ADMIN,
+    UserRole.OPERATOR,
+    UserRole.AUDITOR,
+  ],
 };
 
 /**
@@ -71,17 +81,23 @@ export const PATH_ROLE_MAP: Record<string, UserRole[]> = {
  * Pattern information for mapping routes with wildcards or parameters to their normalized form
  */
 export const PATH_PATTERNS = [
+  // Order matters! More specific patterns must come first
+  // Reward history endpoints - using exact path matching without regex
   {
-    pattern: '/api/v1/rewards/:id',
-    paramRegex: /\/api\/v1\/rewards\/([^/]+)$/,
+    pattern: '/api/v1/rewards/histories/me',
   },
+  {
+    pattern: '/api/v1/rewards/histories',
+  },
+  // Other reward endpoints
   {
     pattern: '/api/v1/rewards/event/:eventId',
     paramRegex: /\/api\/v1\/rewards\/event\/([^/]+)$/,
   },
-  {
-    pattern: '/api/v1/rewards/history/:userId',
-    paramRegex: /\/api\/v1\/rewards\/history\/([^/]+)$/,
-  },
+  // Event endpoints
   { pattern: '/api/v1/events/:id', paramRegex: /\/api\/v1\/events\/([^/]+)$/ },
+  {
+    pattern: '/api/v1/rewards/:id',
+    paramRegex: /\/api\/v1\/rewards\/([^/]+)$/,
+  },
 ];

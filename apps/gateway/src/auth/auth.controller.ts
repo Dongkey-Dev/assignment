@@ -1,5 +1,4 @@
 import { Controller } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { TypedRoute, TypedBody } from '@nestia/core';
 import {
   CreateUserDto,
@@ -9,18 +8,21 @@ import {
 
 @Controller('api/v1/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor() {}
 
   /**
    * 사용자 등록
+   *
+   * role: 'ADMIN' | 'USER' | 'OPERATOR' | 'AUDITOR'
+   *
    * @tag auth
    * @summary 새로운 사용자를 등록합니다
    */
   @TypedRoute.Post('register')
   async register(
-    @TypedBody() createUserDto: CreateUserDto,
+    @TypedBody() _createUserDto: CreateUserDto,
   ): Promise<UserResponseDto> {
-    return this.authService.register(createUserDto);
+    return {} as unknown as UserResponseDto;
   }
 
   /**
@@ -30,8 +32,8 @@ export class AuthController {
    */
   @TypedRoute.Post('login')
   async login(
-    @TypedBody() loginUserDto: LoginUserDto,
+    @TypedBody() _loginUserDto: LoginUserDto,
   ): Promise<UserResponseDto> {
-    return this.authService.login(loginUserDto);
+    return {} as unknown as UserResponseDto;
   }
 }

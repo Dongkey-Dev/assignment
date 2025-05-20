@@ -19,7 +19,7 @@ export class Event extends Document<string> {
   endDate!: Date;
 
   @Prop({ required: true, enum: ['active', 'inactive'], default: 'active' })
-  status!: string;
+  status!: 'active' | 'inactive';
 
   @Prop({ type: [String], default: [] })
   conditionIds!: string[];

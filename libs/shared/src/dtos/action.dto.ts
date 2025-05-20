@@ -1,15 +1,14 @@
-import typia from 'typia';
+import typia, { tags } from 'typia';
 
 export interface MockActionDto {
   /**
    * User ID
-   * @format uuid
    */
-  userId: string;
+  userId: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
 
   /**
    * Action type
-   * @type 'LOGIN' | 'PURCHASE' | 'INVITE_FRIEND'
+   * @type 'LOGIN' | 'PURCHASE' | 'INVITE_FRIEND' | 'ACHIEVEMENT'
    */
   action: string;
 
@@ -23,15 +22,14 @@ export interface MockActionDto {
     target: {
       /**
        * Target type
-       * @type 'User' | 'Product'
+       * @type 'USER' | 'QUEST' | 'EVENT' | 'PRODUCT'
        */
       type: string;
 
       /**
        * Target ID
-       * @format uuid
        */
-      id: string;
+      id: string & tags.Pattern<'^[a-fA-F0-9]{24}$'>;
     };
 
     /**

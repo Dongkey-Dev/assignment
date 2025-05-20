@@ -2,8 +2,10 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { SeedModule } from './seed/seed.module';
 import { MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
-import { getMongoConfig } from '../../../libs/config/mongodb.config';
+import { getMongoConfig } from '@libs/config/mongodb.config';
+import { HealthModule } from '@libs/common/src/health';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { getMongoConfig } from '../../../libs/config/mongodb.config';
       useFactory: () => getMongoConfig(),
     }),
     AuthModule,
+    SeedModule,
+    HealthModule,
   ],
 })
 export class MainModule implements NestModule {
