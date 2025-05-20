@@ -156,7 +156,7 @@ POST /api/v1/events
 * **문제**: API가 늘어날수록 Gateway에 중복 작성 필요
 * **해결**:
 
-  * `routes.ts`에 경로/역할 정의 → 프록시 대상 추상화
+  * `routes.ts`에 경로/권한 정의 → 프록시 대상 추상화
   * `ProxyMiddleware`로 서비스 분기
   * `PATH_PATTERNS` + `PATH_ROLE_MAP`으로 경로 충돌 방지 및 권한 제어
 
@@ -168,3 +168,29 @@ POST /api/v1/events
   * `Condition` 구조를 범용 필드로 통합
   * 검증 로직을 `RewardsConditionCheckerService`에서 `type` 기준 분기
   * 새로운 조건 추가 시 서비스 로직만 수정하면 되도록 설계
+ 
+### 4. 회고
+이번 프로젝트를 진행하며 가장 크게 느낀 점은,
+**"이벤트 달성 조건이 이벤트 모델 내부에 함께 포함된 구조로 인해 테스트가 쉽지 않았다"**는 점입니다.
+
+조건을 독립된 리소스로 분리하지 않고 이벤트 내부에 직접 정의하다 보니,
+→ Swagger나 REST Client를 통한 단위 조건 테스트가 어려웠고,
+→ 실제 동작 여부를 확인하려면 전체 이벤트 흐름을 따라가야만 했습니다.
+
+이로 인해 다음과 같은 방식으로 테스트를 진행하게 되었습니다:
+
+E2E 시나리오 테스트 (test/e2e-runner.ts)
+
+조건 검증 유닛 테스트 (apps/event/test/rewards-condition-checker.spec.ts)
+
+이 과정에서 테스트 코드 자체가 구조적으로 복잡해졌고,
+결과적으로 복잡한 설계를 테스트 코드로 커버한 것 같은 느낌이 들었습니다.
+
+다시 설계할 시간적 여유가 생긴다면, 조건 로직을 분리하거나 테스트 친화적인 구조로 설계가 필요해 보입니다.
+
+고맙습니다.
+
+### 5. 참고 자료
+
+![image](https://github.com/user-attachments/assets/0850f4e5-2073-4eaa-ad1c-98c6dca22801)
+게이트웨이 서버의 routes.ts에서 request url별로 라우팅할 서버를 prefix로 관리하였고, api별로 호출 가능한 권한을 관리하여 접근 권한 관리를 하였습니다.
