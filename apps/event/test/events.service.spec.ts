@@ -4,7 +4,10 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Connection, connect, Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Event, EventSchema } from '@libs/common/schemas/event.schema';
-import { Condition, ConditionSchema } from '@libs/common/schemas/condition.schema';
+import {
+  Condition,
+  ConditionSchema,
+} from '@libs/common/schemas/condition.schema';
 import { EventsService } from '../src/events/events.service';
 import { CreateEventDto } from '@libs/shared/src/dtos/event.dto';
 import { NotFoundException } from '@nestjs/common';
@@ -38,7 +41,9 @@ describe('EventsService', () => {
 
     // Get the models and service
     eventModel = module.get<Model<Event>>(getModelToken(Event.name));
-    conditionModel = module.get<Model<Condition>>(getModelToken(Condition.name));
+    conditionModel = module.get<Model<Condition>>(
+      getModelToken(Condition.name),
+    );
     eventsService = module.get<EventsService>(EventsService);
   });
 
@@ -105,13 +110,19 @@ describe('EventsService', () => {
       // Verify event was saved to database
       const savedEvent = await eventModel.findById(result.id).exec();
       expect(savedEvent).toBeDefined();
-      expect(savedEvent.name).toBe(createEventDto.name);
-      
+      expect(savedEvent?.name).toBe(createEventDto.name);
+
       // Verify conditions were saved
-      const conditions = await conditionModel.find({ eventId: result.id }).exec();
+      const conditions = await conditionModel
+        .find({ eventId: result.id })
+        .exec();
       expect(conditions).toHaveLength(1);
-      expect(conditions[0].actionType).toBe(createEventDto.conditions[0].actionType);
-      expect(conditions[0].targetCount).toBe(createEventDto.conditions[0].targetCount);
+      expect(conditions[0].actionType).toBe(
+        createEventDto.conditions[0].actionType,
+      );
+      expect(conditions[0].targetCount).toBe(
+        createEventDto.conditions[0].targetCount,
+      );
     });
   });
 
@@ -147,7 +158,9 @@ describe('EventsService', () => {
       const nonExistentId = '507f1f77bcf86cd799439011'; // Random MongoDB ObjectId
 
       // Act & Assert
-      await expect(eventsService.getEventById(nonExistentId)).rejects.toThrow(NotFoundException);
+      await expect(eventsService.getEventById(nonExistentId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

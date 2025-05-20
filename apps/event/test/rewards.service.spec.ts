@@ -4,13 +4,26 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { Connection, connect, Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Event, EventSchema } from '@libs/common/schemas/event.schema';
-import { Condition, ConditionSchema } from '@libs/common/schemas/condition.schema';
+import {
+  Condition,
+  ConditionSchema,
+} from '@libs/common/schemas/condition.schema';
 import { Reward, RewardSchema } from '@libs/common/schemas/reward.schema';
-import { RewardHistory, RewardHistorySchema } from '@libs/common/schemas/reward-history.schema';
+import {
+  RewardHistory,
+  RewardHistorySchema,
+} from '@libs/common/schemas/reward-history.schema';
 import { RewardsService } from '../src/rewards/rewards.service';
 import { RewardsConditionCheckerService } from '../src/rewards/rewards-condition-checker.service';
-import { CreateRewardDto, RequestRewardDto } from '@libs/shared/src/dtos/reward.dto';
-import { NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import {
+  CreateRewardDto,
+  RequestRewardDto,
+} from '@libs/shared/src/dtos/reward.dto';
+import {
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+} from '@nestjs/common';
 
 describe('RewardsService', () => {
   let mongod: MongoMemoryServer;
@@ -54,11 +67,17 @@ describe('RewardsService', () => {
 
     // Get the models and service
     eventModel = module.get<Model<Event>>(getModelToken(Event.name));
-    conditionModel = module.get<Model<Condition>>(getModelToken(Condition.name));
+    conditionModel = module.get<Model<Condition>>(
+      getModelToken(Condition.name),
+    );
     rewardModel = module.get<Model<Reward>>(getModelToken(Reward.name));
-    rewardHistoryModel = module.get<Model<RewardHistory>>(getModelToken(RewardHistory.name));
+    rewardHistoryModel = module.get<Model<RewardHistory>>(
+      getModelToken(RewardHistory.name),
+    );
     rewardsService = module.get<RewardsService>(RewardsService);
-    conditionCheckerService = module.get<RewardsConditionCheckerService>(RewardsConditionCheckerService);
+    conditionCheckerService = module.get<RewardsConditionCheckerService>(
+      RewardsConditionCheckerService,
+    );
   });
 
   afterAll(async () => {
@@ -76,7 +95,7 @@ describe('RewardsService', () => {
     await conditionModel.deleteMany({});
     await rewardModel.deleteMany({});
     await rewardHistoryModel.deleteMany({});
-    
+
     // Reset mock
     jest.clearAllMocks();
   });
@@ -128,8 +147,8 @@ describe('RewardsService', () => {
       // Verify reward was saved to database
       const savedReward = await rewardModel.findById(result.id).exec();
       expect(savedReward).toBeDefined();
-      expect(savedReward.name).toBe(createRewardDto.name);
-      expect(savedReward.eventId.toString()).toBe(event._id.toString());
+      expect(savedReward?.name).toBe(createRewardDto.name);
+      expect(savedReward?.eventId.toString()).toBe(event._id.toString());
     });
 
     it('should throw NotFoundException when event does not exist', async () => {
@@ -155,7 +174,9 @@ describe('RewardsService', () => {
       };
 
       // Act & Assert
-      await expect(rewardsService.createReward(createRewardDto)).rejects.toThrow(NotFoundException);
+      await expect(
+        rewardsService.createReward(createRewardDto),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -209,7 +230,9 @@ describe('RewardsService', () => {
       const nonExistentId = '507f1f77bcf86cd799439011'; // Random MongoDB ObjectId
 
       // Act & Assert
-      await expect(rewardsService.getRewardById(nonExistentId)).rejects.toThrow(NotFoundException);
+      await expect(rewardsService.getRewardById(nonExistentId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -374,8 +397,8 @@ describe('RewardsService', () => {
       // Verify reward history was saved to database
       const savedHistory = await rewardHistoryModel.findById(result.id).exec();
       expect(savedHistory).toBeDefined();
-      expect(savedHistory.userId).toBe(userId);
-      expect(savedHistory.eventId.toString()).toBe(event._id.toString());
+      expect(savedHistory?.userId).toBe(userId);
+      expect(savedHistory?.eventId.toString()).toBe(event._id.toString());
     });
 
     it('should throw BadRequestException when conditions are not met', async () => {
@@ -453,7 +476,9 @@ describe('RewardsService', () => {
       };
 
       // Act & Assert
-      await expect(rewardsService.requestReward(requestRewardDto)).rejects.toThrow(BadRequestException);
+      await expect(
+        rewardsService.requestReward(requestRewardDto),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw ConflictException when user already received a reward', async () => {
@@ -508,7 +533,9 @@ describe('RewardsService', () => {
       };
 
       // Act & Assert
-      await expect(rewardsService.requestReward(requestRewardDto)).rejects.toThrow(ConflictException);
+      await expect(
+        rewardsService.requestReward(requestRewardDto),
+      ).rejects.toThrow(ConflictException);
     });
   });
 
